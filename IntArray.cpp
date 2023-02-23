@@ -21,7 +21,13 @@ IntArray::IntArray(long long size, int number)
 
 IntArray::IntArray(const IntArray &other)
 {
-	*this = other;
+	_capacity = other._capacity;
+	_size = other._size;
+	_data = new int[_capacity];
+	for (size_t i = 0; i < _size; ++i)
+	{
+		_data[i] = other._data[i];
+	}
 }
 
 bool IntArray::empty() const
@@ -37,6 +43,28 @@ long long IntArray::size() const
 long long IntArray::capacity() const
 {
 	return _capacity;
+}
+
+void IntArray::push_front(int number)
+{
+	push_back(number);
+	for (size_t i = _size - 1; i > 0; --i)
+	{
+		_data[i] ^= _data[i - 1];
+		_data[i - 1] ^= _data[i];
+		_data[i] ^= _data[i - 1];
+	}
+}
+
+void IntArray::pop_front()
+{
+	for (size_t i = 0; i < _size - 1 ; ++i)
+	{
+		_data[i] ^= _data[i + 1];
+		_data[i + 1] ^= _data[i];
+		_data[i] ^= _data[i + 1];
+	}
+	pop_back();
 }
 
 void IntArray::push_back(int number)
@@ -103,7 +131,7 @@ void IntArray::insert(long long index, const IntArray &array)
 	resize(_size + array._size);
 	for (size_t i = _size - 1; i > index; --i)
 	{
-		_data[i] = _data[i - 1];
+		_data[i] = _data[i - array._size - 1];
 	}
 	for (size_t i = index; i < index + array._size; ++i)
 	{
@@ -163,7 +191,7 @@ void IntArray::resize(long long new_size)
 	int *new_data;
 	long long new_capacity = _capacity;
 
-	while (new_capacity / 2 > _size)
+	while (new_capacity / 2 > new_size)
 	{
 		new_capacity /= 2;
 	}
@@ -205,7 +233,7 @@ IntArray &IntArray::operator=(const IntArray &right)
 	delete[] _data;
 	_capacity = right._capacity;
 	_size = right._size;
-	_data = new int[_size];
+	_data = new int[_capacity];
 	for (size_t i = 0; i < _size; ++i)
 	{
 		_data[i] = right._data[i];
@@ -215,7 +243,7 @@ IntArray &IntArray::operator=(const IntArray &right)
 
 int &IntArray::operator[](long long index) const
 {
-	if (index < 0 || index > _size)
+	if (index < 0 || index >= _size)
 	{
 		throw std::out_of_range("Out of range exception");
 	}

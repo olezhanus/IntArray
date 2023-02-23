@@ -9,6 +9,8 @@ public:
 	bool empty() const;
 	long long size() const;
 	long long capacity() const;
+	void push_front(int number);
+	void pop_front();
 	void push_back(int number);
 	void pop_back();
 	long long find(int number) const;
