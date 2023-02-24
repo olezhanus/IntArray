@@ -170,7 +170,7 @@ void IntArray::clear()
 	_size = 0;
 	_capacity = 1;
 	delete[] _data;
-	_data = new int(_capacity);
+	_data = new int[_capacity];
 }
 
 void IntArray::resize(long long new_size)
